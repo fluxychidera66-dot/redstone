@@ -45,22 +45,34 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    // OAuth endpoints (stub responses)
+    // OAuth endpoints
     if (pathname === '/api/slack/oauth') {
+      const slackClientId = '10844551339572.10842664950550';
+      const slackScopes = 'channels:read,chat:write,users:read,search:read,reactions:read';
+      const redirectUri = process.env.SLACK_REDIRECT_URI || 'https://redstone-backend-1.onrender.com/api/slack/oauth/callback';
+      const oauthUrl = `https://slack.com/oauth/v2/authorize?client_id=${slackClientId}&scope=${encodeURIComponent(slackScopes)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ url: 'https://slack.com/oauth/v2/authorize?client_id=placeholder' }));
+      res.end(JSON.stringify({ url: oauthUrl }));
       return;
     }
 
     if (pathname === '/api/gmail/oauth') {
+      const googleClientId = '250848059224-qrkpqiopqp0nifg19b85a7l3uj367u41.apps.googleusercontent.com';
+      const googleScopes = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.modify';
+      const redirectUri = process.env.GOOGLE_REDIRECT_URI || 'https://redstone-backend-1.onrender.com/api/gmail/oauth/callback';
+      const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(googleScopes)}&access_type=offline&prompt=consent`;
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ url: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=placeholder' }));
+      res.end(JSON.stringify({ url: oauthUrl }));
       return;
     }
 
     if (pathname === '/api/calendar/oauth') {
+      const googleClientId = '250848059224-qrkpqiopqp0nifg19b85a7l3uj367u41.apps.googleusercontent.com';
+      const googleScopes = 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar';
+      const redirectUri = process.env.GOOGLE_REDIRECT_URI || 'https://redstone-backend-1.onrender.com/api/calendar/oauth/callback';
+      const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(googleScopes)}&access_type=offline&prompt=consent`;
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ url: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=placeholder' }));
+      res.end(JSON.stringify({ url: oauthUrl }));
       return;
     }
 
@@ -71,7 +83,36 @@ const server = http.createServer((req, res) => {
         plan: 'free',
         messagesUsed: 5,
         messagesDaily: 10,
-        retention: 7
+        retention: 7,
+        pricing: {
+          free: { name: 'Free', price: 0, messages: 10, retention: 7, topics: 3 },
+          basic: { name: 'Basic', price: 30, messages: 2000, retention: 90, topics: 'unlimited' },
+          pro: { name: 'Pro', price: 80, messages: 10000, retention: 270, topics: 'unlimited' },
+          business: { name: 'Business', price: 250, messages: 50000, retention: 540, topics: 'unlimited' },
+          enterprise: { name: 'Enterprise', price: 'custom', messages: 'unlimited', retention: 'unlimited', topics: 'unlimited' }
+        }
+      }));
+      return;
+    }
+
+    if (pathname === '/api/team/activity') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        activity: [
+          { id: 1, description: 'Slack connected', display_name: 'Demo User', created_at: new Date(Date.now() - 3600000).toISOString() },
+          { id: 2, description: 'Gmail synced 45 messages', display_name: 'Demo User', created_at: new Date(Date.now() - 7200000).toISOString() },
+          { id: 3, description: 'Calendar imported 12 events', display_name: 'Demo User', created_at: new Date(Date.now() - 10800000).toISOString() }
+        ]
+      }));
+      return;
+    }
+
+    if (pathname === '/api/team/integrations') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        slack: { status: 'not_connected', metadata: {} },
+        gmail: { status: 'not_connected', metadata: {} },
+        google_calendar: { status: 'not_connected', metadata: {} }
       }));
       return;
     }

@@ -76,6 +76,80 @@ const server = http.createServer((req, res) => {
       return;
     }
 
+    // OAuth Callback Handlers
+    if (pathname === '/api/slack/oauth/callback') {
+      const code = query.code;
+      const error = query.error;
+      
+      if (error) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: error }));
+        return;
+      }
+
+      if (!code) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No authorization code provided' }));
+        return;
+      }
+
+      // Exchange code for token
+      const clientId = '10844551339572.10842664950550';
+      const clientSecret = process.env.SLACK_CLIENT_SECRET || '4a1c6856e964970200d895dc627b12b6';
+      const redirectUri = 'https://redstone-backend-1.onrender.com/api/slack/oauth/callback';
+
+      const postData = `client_id=${clientId}&client_secret=${clientSecret}&code=${code}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+      // For now, redirect to frontend with success (real token exchange would happen here)
+      res.writeHead(302, { 'Location': `https://redstone-backend-1.onrender.com?slack=connected&code=${code}` });
+      res.end();
+      return;
+    }
+
+    if (pathname === '/api/gmail/oauth/callback') {
+      const code = query.code;
+      const error = query.error;
+      
+      if (error) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: error }));
+        return;
+      }
+
+      if (!code) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No authorization code provided' }));
+        return;
+      }
+
+      // Redirect back to frontend
+      res.writeHead(302, { 'Location': `https://redstone-backend-1.onrender.com?gmail=connected&code=${code}` });
+      res.end();
+      return;
+    }
+
+    if (pathname === '/api/calendar/oauth/callback') {
+      const code = query.code;
+      const error = query.error;
+      
+      if (error) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: error }));
+        return;
+      }
+
+      if (!code) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No authorization code provided' }));
+        return;
+      }
+
+      // Redirect back to frontend
+      res.writeHead(302, { 'Location': `https://redstone-backend-1.onrender.com?calendar=connected&code=${code}` });
+      res.end();
+      return;
+    }
+
     // Team endpoints
     if (pathname === '/api/team/usage') {
       res.writeHead(200, { 'Content-Type': 'application/json' });

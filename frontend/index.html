@@ -705,6 +705,26 @@ async function disconnectCalendar() {
   toast('Calendar disconnected'); loadIntegrations();
 }
 
+// ── OAuth Callback Handling ───────────────────────────────────
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('slack') && params.get('slack') === 'connected') {
+    toast('✅ Slack connected successfully!');
+    loadIntegrations();
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  if (params.has('gmail') && params.get('gmail') === 'connected') {
+    toast('✅ Gmail connected successfully!');
+    loadIntegrations();
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  if (params.has('calendar') && params.get('calendar') === 'connected') {
+    toast('✅ Google Calendar connected successfully!');
+    loadIntegrations();
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+});
+
 // ── Recall ───────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('main-input');

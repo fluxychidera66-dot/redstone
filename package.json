@@ -1,0 +1,11 @@
+{
+  "name": "redstone",
+  "version": "1.0.0",
+  "description": "Redstone - Team AI Memory",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {}
+}

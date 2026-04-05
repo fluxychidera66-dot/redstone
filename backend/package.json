@@ -1,0 +1,10 @@
+{
+  "name": "redstone-backend",
+  "version": "1.0.0",
+  "description": "Redstone - Team AI Memory Agent",
+  "main": "../server.js",
+  "scripts": {
+    "start": "node ../server.js"
+  },
+  "dependencies": {}
+}
